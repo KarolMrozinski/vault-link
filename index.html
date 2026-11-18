@@ -1,0 +1,1388 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>VaultLink UI - One UI 9.5</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #007AFF;
+      --primary-dark: #0062CC;
+      --bg-dark: #121212;
+      --card-bg: #1E1E1E;
+      --text-light: #FFFFFF;
+      --border-radius: 16px;
+      --shadow: rgba(0, 0, 0, 0.3);
+      --sidebar-width: 280px;
+      --success: #34C759;
+      --warning: #FF9500;
+      --danger: #FF3B30;
+      --accent-blue: #0A84FF;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Samsung Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-light);
+      display: flex;
+      height: 100vh;
+      overflow: hidden;
+      position: relative;
+      transition: all 0.3s ease;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: var(--sidebar-width);
+      background-color: #252525;
+      padding: 20px;
+      border-right: 1px solid rgba(255,255,255,0.08);
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      transition: all 0.3s ease;
+    }
+
+    .sidebar-header {
+      margin-bottom: 20px;
+      padding-bottom: 15px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .sidebar-header h2 {
+      font-size: 20px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .stats {
+      background-color: rgba(0, 122, 255, 0.15);
+      color: var(--primary);
+      padding: 4px 8px;
+      border-radius: 20px;
+      font-size: 12px;
+    }
+
+    .input-group {
+      display: flex;
+      margin-bottom: 12px;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    input[type="url"], input[type="text"] {
+      flex: 1;
+      padding: 12px 16px;
+      border-radius: var(--border-radius);
+      background-color: var(--card-bg);
+      color: white;
+      border: none;
+      font-size: 14px;
+    }
+
+    button {
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      padding: 12px 16px;
+      border-radius: var(--border-radius);
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    button:hover {
+      background-color: var(--primary-dark);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
+
+    .btn-secondary {
+      background-color: rgba(255,255,255,0.1);
+    }
+
+    .btn-secondary:hover {
+      background-color: rgba(255,255,255,0.2);
+    }
+
+    .btn-danger {
+      background-color: var(--danger);
+    }
+
+    .btn-danger:hover {
+      background-color: #d13434;
+    }
+
+    .links-list {
+      flex: 1;
+      overflow-y: auto;
+      margin-top: 10px;
+    }
+
+    .folder-item, .link-item {
+      display: flex;
+      align-items: center;
+      padding: 10px;
+      margin-bottom: 8px;
+      background-color: var(--card-bg);
+      border-radius: 12px;
+      transition: all 0.3s ease;
+      position: relative;
+      cursor: pointer;
+    }
+
+    .folder-item:hover, .link-item:hover {
+      transform: translateX(5px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      border-left-color: var(--success);
+    }
+
+    .item-icon {
+      margin-right: 10px;
+      font-size: 18px;
+    }
+
+    .folder-icon {
+      color: var(--primary);
+    }
+
+    .item-text {
+      flex: 1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-size: 14px;
+    }
+
+    .trash-zone {
+      margin-top: 15px;
+      padding: 15px;
+      background-color: rgba(255, 59, 48, 0.1);
+      border: 2px dashed var(--danger);
+      border-radius: var(--border-radius);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      color: var(--danger);
+    }
+
+    .trash-zone:hover {
+      background-color: rgba(255, 59, 48, 0.2);
+      transform: scale(1.02);
+    }
+
+    .trash-zone.drag-over {
+      background-color: rgba(255, 59, 48, 0.4) !important;
+      border-style: solid;
+      transform: scale(1.05);
+    }
+
+    .trash-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    .trash-count {
+      background-color: var(--danger);
+      color: white;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 12px;
+    }
+
+    .main-content {
+      flex: 1;
+      padding: 20px;
+      overflow-y: auto;
+      position: relative;
+    }
+
+    h1 {
+      font-weight: 600;
+      font-size: 24px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .controls {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .link-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 20px;
+    }
+
+    .folder-container {
+      background-color: rgba(30, 30, 30, 0.7);
+      border-radius: var(--border-radius);
+      padding: 15px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+
+    .folder-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 15px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .folder-title {
+      font-size: 18px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+    }
+
+    .folder-title i {
+      margin-right: 8px;
+      color: var(--primary);
+    }
+
+    .link-card {
+      width: 100%;
+      height: 220px;
+      background-color: var(--card-bg);
+      border-radius: var(--border-radius);
+      overflow: hidden;
+      position: relative;
+      box-shadow: 0 4px 12px var(--shadow);
+      transition: all 0.3s ease, transform 0.2s ease;
+      cursor: pointer;
+    }
+
+    .link-card:hover {
+      transform: translateY(-5px) scale(1.02);
+      box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+      z-index: 10;
+    }
+
+    .card-content {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .preview-container {
+      position: relative;
+      width: 100%;
+      height: 130px;
+      background-color: #0d0d0d;
+      overflow: hidden;
+    }
+
+    .preview-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .play-overlay {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 32px;
+      color: rgba(255, 255, 255, 0.85);
+      text-shadow: 0 2px 10px rgba(0,0,0,0.7);
+      pointer-events: none;
+    }
+
+    .link-info {
+      padding: 12px;
+      flex: 1;
+      overflow: hidden;
+    }
+
+    .url-text {
+      font-size: 13px;
+      color: #8E8E93;
+      margin-bottom: 4px;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
+
+    .title-text {
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 4px;
+      color: var(--text-light);
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
+
+    /* SZYBKIE OKNO PODGLĄDU NA ŻYWO (PRAWY GÓRNY RÓG) */
+    #preview {
+      position: fixed;
+      top: 25px;
+      right: 25px;
+      width: 500px;
+      height: 350px;
+      background-color: #1a1a1a;
+      border-radius: var(--border-radius);
+      box-shadow: 0 16px 36px rgba(0,0,0,0.8);
+      border: 1px solid rgba(255,255,255,0.2);
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      opacity: 0;
+      pointer-events: none;
+      transform: scale(0.96);
+      transition: opacity 0.15s ease-out, transform 0.15s ease-out;
+    }
+
+    #preview.visible {
+      opacity: 1;
+      pointer-events: auto;
+      transform: scale(1);
+    }
+
+    #preview-header {
+      padding: 10px 14px;
+      background-color: #222222;
+      font-size: 12px;
+      color: #bbb;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+
+    #preview-header-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+
+    #preview-body {
+      flex: 1;
+      width: 100%;
+      height: calc(100% - 37px);
+      position: relative;
+      background-color: #111111;
+    }
+
+    #preview-body img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 1;
+    }
+
+    #preview-body webview {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 2;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+    }
+
+    #preview-body webview.ready {
+      opacity: 1;
+    }
+
+    .notification {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      padding: 15px 20px;
+      background-color: var(--success);
+      color: white;
+      border-radius: var(--border-radius);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      z-index: 10000;
+      transform: translateX(150%);
+      transition: transform 0.3s ease;
+      display: flex;
+      align-items: center;
+    }
+
+    .notification.show {
+      transform: translateX(0);
+    }
+
+    .notification i {
+      margin-right: 10px;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 50px 20px;
+      color: #777;
+    }
+
+    .empty-state i {
+      font-size: 48px;
+      margin-bottom: 15px;
+      opacity: 0.5;
+    }
+
+    .search-container {
+      position: relative;
+      margin-bottom: 20px;
+    }
+
+    .search-container input {
+      width: 100%;
+      padding-left: 40px;
+    }
+
+    .search-container i {
+      position: absolute;
+      left: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #777;
+    }
+
+    .fab {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background-color: var(--primary);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      cursor: pointer;
+      z-index: 999;
+      transition: all 0.3s ease;
+    }
+
+    .fab:hover {
+      transform: scale(1.1) rotate(90deg);
+      background-color: var(--primary-dark);
+    }
+
+    .modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 99999;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .modal.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .modal-content {
+      background-color: var(--card-bg);
+      border-radius: var(--border-radius);
+      width: 90%;
+      max-width: 550px;
+      padding: 25px;
+      box-shadow: 0 8px 16px rgba(0,0,0,0.4);
+      position: relative;
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .modal-body {
+      margin-bottom: 20px;
+      max-height: 400px;
+      overflow-y: auto;
+    }
+
+    .modal-footer {
+      display: flex;
+      gap: 10px;
+      justify-content: flex-end;
+    }
+
+    .drag-over {
+      background-color: rgba(0, 122, 255, 0.2) !important;
+      border: 2px dashed var(--primary);
+    }
+
+    .folder-item.dragging, .link-card.dragging {
+      opacity: 0.4;
+      transform: scale(0.95);
+    }
+
+    .trash-item-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px;
+      background-color: rgba(255,255,255,0.05);
+      border-radius: 8px;
+      margin-bottom: 8px;
+    }
+
+    .trash-item-title {
+      font-size: 14px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      max-width: 300px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <h2><i class="fas fa-shield-alt" style="color: var(--primary);"></i> VaultLink UI</h2>
+    <span class="stats">Linków: <span id="link-count">0</span></span>
+  </div>
+  
+  <div class="search-container">
+    <i class="fas fa-search"></i>
+    <input type="text" id="search-input" placeholder="Szukaj linków..." />
+  </div>
+  
+  <div class="input-group">
+    <button onclick="showAddLinkModal()" style="flex: 1;">
+      <i class="fas fa-plus"></i> Link
+    </button>
+    <button onclick="showCreateFolderModal()" style="flex: 1;">
+      <i class="fas fa-folder-plus"></i> Folder
+    </button>
+  </div>
+
+  <div class="input-group" style="border-top: 1px solid rgba(255,255,255,0.1); padding-top: 12px; margin-top: 5px;">
+    <button class="btn-secondary" onclick="exportFullDatabase()" style="width: 100%; font-size: 13px;">
+      <i class="fas fa-file-export" style="color: var(--primary);"></i> Eksportuj bazę (.vault)
+    </button>
+    <button class="btn-secondary" onclick="document.getElementById('import-vault-file').click()" style="width: 100%; font-size: 13px; margin-top: 5px;">
+      <i class="fas fa-file-import" style="color: var(--warning);"></i> Wczytaj bazę (.vault)
+    </button>
+    <input type="file" id="import-vault-file" accept=".vault,.json" style="display: none;" onchange="importFullDatabase(event)" />
+  </div>
+  
+  <div class="links-list" id="links-list"></div>
+
+  <div class="trash-zone" id="trash-zone" onclick="showTrashModal()">
+    <div class="trash-info">
+      <i class="fas fa-trash-alt" style="font-size: 18px;"></i>
+      <span>Kosz</span>
+    </div>
+    <span class="trash-count" id="trash-count">0</span>
+  </div>
+</div>
+
+<div class="main-content">
+  <h1><i class="fas fa-layer-group"></i> VaultLink UI - Dashboard
+    <span style="font-size: 12px; font-weight: normal; opacity: 0.6;">One UI 9.5 Desktop Edition</span>
+  </h1>
+  
+  <div class="controls">
+    <button class="btn-secondary" id="sort-asc"><i class="fas fa-sort-alpha-down"></i> Sortuj A-Z</button>
+    <button class="btn-secondary" id="sort-desc"><i class="fas fa-sort-alpha-up"></i> Sortuj Z-A</button>
+  </div>
+  
+  <div id="folder-container"></div>
+  
+  <div class="empty-state" id="empty-message">
+    <i class="fas fa-shield-alt"></i>
+    <h3>Vault jest pusty</h3>
+    <p>Dodaj swój pierwszy link lub wczytaj istniejący plik bazy `.vault`!</p>
+  </div>
+</div>
+
+<!-- INSTANT LIVE PREVIEW BOX -->
+<div id="preview">
+  <div id="preview-header">
+    <div id="preview-header-left">
+      <i class="fas fa-bolt" style="color: #FFD700;"></i>
+      <span id="preview-url-display">Podgląd gotowy</span>
+    </div>
+    <span style="font-size: 10px; opacity: 0.5;">INSTANT PREVIEW</span>
+  </div>
+  <div id="preview-body"></div>
+</div>
+
+<div class="fab" onclick="showAddLinkModal()">
+  <i class="fas fa-plus"></i>
+</div>
+
+<div class="notification" id="notification">Link został dodany!</div>
+
+<!-- Modal dla dodawania linku -->
+<div class="modal" id="add-link-modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>Dodaj nowy link</h3>
+      <button onclick="closeModal('add-link-modal')">&times;</button>
+    </div>
+    <div class="modal-body">
+      <input type="url" id="modal-link-input" placeholder="Wklej link (np. YouTube, GitHub)..." style="width: 100%; padding: 12px; margin-bottom: 15px;" />
+      <input type="text" id="modal-title-input" placeholder="Tytuł (opcjonalnie)" style="width: 100%; padding: 12px; margin-bottom: 15px;" />
+      <select id="folder-select" style="width: 100%; padding: 12px; background-color: var(--card-bg); color: white; border-radius: 8px; margin-bottom: 15px;">
+        <option value="">Brak folderu</option>
+      </select>
+    </div>
+    <div class="modal-footer">
+      <button onclick="closeModal('add-link-modal')">Anuluj</button>
+      <button onclick="addLinkFromModal()">Dodaj</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal dla tworzenia folderu -->
+<div class="modal" id="create-folder-modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>Utwórz nowy folder</h3>
+      <button onclick="closeModal('create-folder-modal')">&times;</button>
+    </div>
+    <div class="modal-body">
+      <input type="text" id="folder-name-input" placeholder="Nazwa folderu..." style="width: 100%; padding: 12px; margin-bottom: 15px;" />
+    </div>
+    <div class="modal-footer">
+      <button onclick="closeModal('create-folder-modal')">Anuluj</button>
+      <button onclick="createFolder()">Utwórz folder</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal dla Kosza -->
+<div class="modal" id="trash-modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3><i class="fas fa-trash-alt"></i> Zawartość Kosza</h3>
+      <button onclick="closeModal('trash-modal')">&times;</button>
+    </div>
+    <div class="modal-body" id="trash-modal-list"></div>
+    <div class="modal-footer">
+      <button class="btn-danger" onclick="emptyTrash()">Opróżnij Kosz</button>
+      <button onclick="closeModal('trash-modal')">Zamknij</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  let links = [];
+  let folders = [];
+  let trash = [];
+
+  const container = document.getElementById('folder-container');
+  const sidebarList = document.getElementById('links-list');
+  const linkCountElement = document.getElementById('link-count');
+  const emptyMessage = document.getElementById('empty-message');
+  const trashZone = document.getElementById('trash-zone');
+  const trashCountElement = document.getElementById('trash-count');
+
+  async function init() {
+    await loadDataFromDisk();
+    setupTrashZoneDragEvents();
+    
+    document.getElementById('search-input').addEventListener('input', filterLinks);
+    document.getElementById('sort-asc').addEventListener('click', () => sortLinks('asc'));
+    document.getElementById('sort-desc').addEventListener('click', () => sortLinks('desc'));
+  }
+
+  async function loadDataFromDisk() {
+    if (window.electronAPI) {
+      const diskData = await window.electronAPI.readLinksFromDisk();
+      folders = diskData.folders || [];
+      links = diskData.links || [];
+      trash = diskData.trash || [];
+    }
+    renderAllContent();
+    updateLinkCount();
+  }
+
+  function normalizeUrl(url) {
+    try {
+      const parsed = new URL(url);
+      let href = parsed.href.toLowerCase();
+      if (href.endsWith('/')) {
+        href = href.slice(0, -1);
+      }
+      return href;
+    } catch (e) {
+      return url.toLowerCase().trim().replace(/\/+$/, '');
+    }
+  }
+
+  function getPreviewMedia(url) {
+    try {
+      const parsed = new URL(url);
+      const host = parsed.hostname.toLowerCase();
+
+      if (host.includes('youtube.com') || host.includes('youtu.be')) {
+        let videoId = '';
+        if (host.includes('youtu.be')) {
+          videoId = parsed.pathname.slice(1);
+        } else {
+          videoId = parsed.searchParams.get('v');
+        }
+        if (videoId) {
+          return {
+            image: `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`,
+            isVideo: true
+          };
+        }
+      }
+
+      if (host.includes('vimeo.com')) {
+        return {
+          image: `https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?w=500&auto=format&fit=crop`,
+          isVideo: true
+        };
+      }
+    } catch (e) {}
+
+    return {
+      image: `https://api.microlink.io/?url=${encodeURIComponent(url)}&screenshot=true&embed=screenshot.url`,
+      isVideo: false
+    };
+  }
+
+  function exportFullDatabase() {
+    if (links.length === 0 && folders.length === 0 && trash.length === 0) {
+      showNotification('Baza jest pusta, brak danych do eksportu!', 'warning');
+      return;
+    }
+
+    const payload = {
+      app: "VaultLink UI",
+      version: "9.5",
+      exportedAt: new Date().toISOString(),
+      folders: folders,
+      links: links,
+      trash: trash
+    };
+
+    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(payload, null, 2));
+    const downloadAnchor = document.createElement('a');
+    downloadAnchor.setAttribute("href", dataStr);
+    downloadAnchor.setAttribute("download", `vault_backup_${Date.now()}.vault`);
+    document.body.appendChild(downloadAnchor);
+    downloadAnchor.click();
+    downloadAnchor.remove();
+
+    showNotification('Wyeksportowano pełną bazę .vault!');
+  }
+
+  function importFullDatabase(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = async function(e) {
+      try {
+        const parsed = JSON.parse(e.target.result);
+        if (parsed.links && Array.isArray(parsed.links)) {
+          const existingUrls = new Set(links.map(l => normalizeUrl(l.url)));
+          const uniqueImportedLinks = [];
+
+          for (const link of parsed.links) {
+            const norm = normalizeUrl(link.url);
+            if (!existingUrls.has(norm)) {
+              existingUrls.add(norm);
+              uniqueImportedLinks.push(link);
+            }
+          }
+
+          links = links.concat(uniqueImportedLinks);
+
+          const existingFolderIds = new Set(folders.map(f => f.id));
+          for (const f of (parsed.folders || [])) {
+            if (!existingFolderIds.has(f.id)) {
+              folders.push(f);
+            }
+          }
+
+          trash = parsed.trash || [];
+
+          if (window.electronAPI) {
+            for (const f of folders) {
+              await window.electronAPI.saveItemToDisk({ type: 'folder', data: f });
+            }
+            for (const l of links) {
+              await window.electronAPI.saveItemToDisk({ type: 'link', data: l });
+            }
+          }
+
+          renderAllContent();
+          updateLinkCount();
+          showNotification('Baza danych została wczytana!');
+        } else {
+          showNotification('Nieprawidłowy plik bazy danych!', 'danger');
+        }
+      } catch (err) {
+        showNotification('Błąd podczas odczytu pliku!', 'danger');
+      }
+    };
+    reader.readAsText(file);
+    event.target.value = '';
+  }
+
+  async function addLinkFromModal() {
+    const urlInput = document.getElementById('modal-link-input');
+    const titleInput = document.getElementById('modal-title-input');
+    const folderSelect = document.getElementById('folder-select');
+    
+    let url = urlInput.value.trim();
+    if (!url) return;
+
+    if (!url.startsWith('http://') && !url.startsWith('https://')) {
+      url = 'https://' + url;
+    }
+
+    try {
+      new URL(url);
+    } catch (e) {
+      showNotification('Nieprawidłowy URL!', 'danger');
+      return;
+    }
+
+    const normalizedInputUrl = normalizeUrl(url);
+    const isDuplicate = links.some(link => normalizeUrl(link.url) === normalizedInputUrl);
+
+    if (isDuplicate) {
+      showNotification('Ten link znajduje się już w Twojej bazie!', 'warning');
+      return;
+    }
+
+    const id = Date.now().toString();
+    const folderId = folderSelect.value || null;
+    const mediaInfo = getPreviewMedia(url);
+    
+    const linkItem = {
+      id,
+      url,
+      title: titleInput.value.trim() || extractTitleFromUrl(url),
+      description: 'Strona internetowa',
+      image: mediaInfo.image,
+      isVideo: mediaInfo.isVideo || false,
+      createdAt: new Date().toISOString(),
+      folderId: folderId
+    };
+    
+    links.push(linkItem);
+    if (window.electronAPI) {
+      await window.electronAPI.saveItemToDisk({ type: 'link', data: linkItem });
+    }
+
+    renderAllContent();
+    updateLinkCount();
+    showNotification('Link zapisany!');
+    closeModal('add-link-modal');
+    
+    urlInput.value = "";
+    titleInput.value = "";
+  }
+
+  async function createFolder() {
+    const nameInput = document.getElementById('folder-name-input');
+    let name = nameInput.value.trim();
+    if (!name) return;
+
+    const id = Date.now().toString();
+    const folderItem = { id, name, createdAt: new Date().toISOString() };
+    folders.push(folderItem);
+    
+    if (window.electronAPI) {
+      await window.electronAPI.saveItemToDisk({ type: 'folder', data: folderItem });
+    }
+
+    renderAllContent();
+    showNotification('Folder utworzony!');
+    closeModal('create-folder-modal');
+    nameInput.value = "";
+  }
+
+  function extractTitleFromUrl(url) {
+    try {
+      const domain = new URL(url).hostname.replace('www.', '');
+      return `Strona: ${domain}`;
+    } catch(e) {
+      return url;
+    }
+  }
+
+  function renderAllContent() {
+    container.innerHTML = '';
+    sidebarList.innerHTML = '';
+
+    if (folders.length === 0 && links.length === 0) {
+      emptyMessage.style.display = 'block';
+      return;
+    }
+    
+    emptyMessage.style.display = 'none';
+
+    folders.forEach(folder => {
+      const itemDiv = document.createElement('div');
+      itemDiv.className = 'folder-item';
+      itemDiv.dataset.id = folder.id;
+      itemDiv.dataset.type = 'folder';
+      
+      const iconSpan = document.createElement('span');
+      iconSpan.className = 'item-icon folder-icon';
+      iconSpan.innerHTML = '<i class="fas fa-folder"></i>';
+      
+      const textSpan = document.createElement('span');
+      textSpan.className = 'item-text';
+      textSpan.textContent = folder.name;
+      
+      itemDiv.appendChild(iconSpan);
+      itemDiv.appendChild(textSpan);
+      
+      setupDragEvents(itemDiv, 'folder');
+      sidebarList.appendChild(itemDiv);
+    });
+
+    const looseLinks = links.filter(link => !link.folderId);
+    if (looseLinks.length > 0) {
+      renderLinksInContainer(looseLinks, container);
+    }
+
+    folders.forEach(folder => {
+      const folderContainer = document.createElement('div');
+      folderContainer.className = 'folder-container';
+      folderContainer.dataset.id = folder.id;
+      folderContainer.dataset.type = 'folder';
+      
+      const headerDiv = document.createElement('div');
+      headerDiv.className = 'folder-header';
+      
+      const titleSpan = document.createElement('span');
+      titleSpan.className = 'folder-title';
+      titleSpan.innerHTML = '<i class="fas fa-folder"></i> ' + folder.name;
+      
+      headerDiv.appendChild(titleSpan);
+      
+      const contentDiv = document.createElement('div');
+      contentDiv.className = 'folder-content';
+      
+      const folderLinks = links.filter(link => link.folderId === folder.id);
+      renderLinksInContainer(folderLinks, contentDiv);
+      
+      folderContainer.appendChild(headerDiv);
+      folderContainer.appendChild(contentDiv);
+      
+      setupDragEvents(folderContainer, 'folder-target');
+      container.appendChild(folderContainer);
+    });
+
+    const folderSelect = document.getElementById('folder-select');
+    if (folderSelect) {
+      folderSelect.innerHTML = '<option value="">Brak folderu</option>';
+      folders.forEach(folder => {
+        const option = document.createElement('option');
+        option.value = folder.id;
+        option.textContent = folder.name;
+        folderSelect.appendChild(option);
+      });
+    }
+  }
+
+  function renderLinksInContainer(linksArray, targetContainer) {
+    if (!linksArray || linksArray.length === 0 || !targetContainer) return;
+    
+    const containerDiv = document.createElement('div');
+    containerDiv.className = 'link-grid';
+    
+    linksArray.forEach(link => {
+      const card = document.createElement('div');
+      card.className = 'link-card';
+      card.dataset.id = link.id;
+      card.dataset.type = 'link';
+      card.draggable = true;
+      
+      const contentDiv = document.createElement('div');
+      contentDiv.className = 'card-content';
+      
+      const previewContainer = document.createElement('div');
+      previewContainer.className = 'preview-container';
+
+      const img = document.createElement('img');
+      img.src = link.image || getPreviewMedia(link.url).image;
+      img.alt = link.title || 'Preview';
+      img.className = 'preview-img';
+      img.onerror = () => {
+        img.src = 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=500&auto=format&fit=crop';
+      };
+
+      previewContainer.appendChild(img);
+
+      if (link.isVideo || getPreviewMedia(link.url).isVideo) {
+        const playIcon = document.createElement('div');
+        playIcon.className = 'play-overlay';
+        playIcon.innerHTML = '<i class="fab fa-youtube"></i>';
+        previewContainer.appendChild(playIcon);
+      }
+      
+      const infoDiv = document.createElement('div');
+      infoDiv.className = 'link-info';
+      
+      const titleEl = document.createElement('div');
+      titleEl.className = 'title-text';
+      titleEl.textContent = truncateUrl(link.title || link.url);
+      
+      const urlEl = document.createElement('div');
+      urlEl.className = 'url-text';
+      urlEl.textContent = truncateUrl(link.url);
+      
+      infoDiv.appendChild(titleEl);
+      infoDiv.appendChild(urlEl);
+      contentDiv.appendChild(previewContainer);
+      contentDiv.appendChild(infoDiv);
+      card.appendChild(contentDiv);
+      
+      // INSTANT ZERO-LATENCY PREVIEW ENGINE
+      let previewTimeout;
+      card.addEventListener('mouseenter', () => {
+        clearTimeout(previewTimeout);
+        
+        const preview = document.getElementById('preview');
+        const previewBody = document.getElementById('preview-body');
+        const previewUrlDisplay = document.getElementById('preview-url-display');
+        
+        previewUrlDisplay.textContent = link.url;
+
+        const cachedImageSrc = link.image || getPreviewMedia(link.url).image;
+
+        // KROK 1: Wstawiamy natychmiast buforowany render obrazu (0 ms zwłoki)
+        previewBody.innerHTML = `
+          <img src="${cachedImageSrc}" id="preview-instant-img" />
+          <webview id="active-webview" src="${link.url}"></webview>
+        `;
+        
+        preview.classList.add('visible');
+
+        // KROK 2: W tle ładuje się aktywna strona webview. Gdy ukończy ładowanie, PŁYNNIE PODMIENIA obraz
+        const webview = document.getElementById('active-webview');
+        if (webview) {
+          webview.addEventListener('did-finish-load', () => {
+            try {
+              webview.setZoomFactor(0.75);
+              webview.classList.add('ready');
+            } catch(e) {}
+          });
+        }
+      });
+      
+      card.addEventListener('mouseleave', () => {
+        clearTimeout(previewTimeout);
+        previewTimeout = setTimeout(() => {
+          const preview = document.getElementById('preview');
+          const previewBody = document.getElementById('preview-body');
+          if (preview) {
+            preview.classList.remove('visible');
+            setTimeout(() => {
+              if (!preview.classList.contains('visible')) {
+                previewBody.innerHTML = '';
+              }
+            }, 150);
+          }
+        }, 150);
+      });
+      
+      card.onclick = (e) => {
+        e.stopPropagation();
+        if (window.electronAPI) {
+          window.electronAPI.openExternalUrl(link.url);
+        } else {
+          window.open(link.url, '_blank');
+        }
+      };
+      
+      setupDragEvents(card, 'link');
+      containerDiv.appendChild(card);
+    });
+    
+    targetContainer.appendChild(containerDiv);
+  }
+
+  function truncateUrl(url) {
+    return url.length > 35 ? url.substring(0, 32) + "..." : url;
+  }
+
+  function updateLinkCount() {
+    linkCountElement.textContent = links.length;
+    trashCountElement.textContent = trash.length;
+  }
+
+  function filterLinks() {
+    const searchTerm = document.getElementById('search-input').value.toLowerCase();
+    if (!searchTerm) {
+      renderAllContent();
+      return;
+    }
+    
+    const filteredLinks = links.filter(link => 
+      link.url.toLowerCase().includes(searchTerm) || 
+      link.title.toLowerCase().includes(searchTerm)
+    );
+    
+    container.innerHTML = '';
+    if (filteredLinks.length === 0) {
+      emptyMessage.style.display = 'block';
+      return;
+    }
+    
+    emptyMessage.style.display = 'none';
+    renderLinksInContainer(filteredLinks, container);
+  }
+
+  function sortLinks(direction) {
+    if (direction === 'asc') {
+      links.sort((a, b) => a.title.localeCompare(b.title));
+    } else {
+      links.sort((a, b) => b.title.localeCompare(a.title));
+    }
+    renderAllContent();
+    showNotification(`Posortowano ${direction === 'asc' ? 'A-Z' : 'Z-A'}`);
+  }
+
+  function showNotification(message, type = 'success') {
+    const notification = document.getElementById('notification');
+    notification.innerHTML = `<i class="fas fa-${type === 'danger' ? 'exclamation-circle' : type === 'warning' ? 'exclamation-triangle' : 'check-circle'}"></i> ${message}`;
+    notification.style.backgroundColor = type === 'danger' ? '#FF3B30' : type === 'warning' ? '#FF9500' : '#34C759';
+    
+    notification.classList.add('show');
+    setTimeout(() => notification.classList.remove('show'), 3000);
+  }
+
+  function showAddLinkModal() { document.getElementById('add-link-modal').classList.add('active'); }
+  function showCreateFolderModal() { document.getElementById('create-folder-modal').classList.add('active'); }
+  function closeModal(modalId) { document.getElementById(modalId).classList.remove('active'); }
+
+  function showTrashModal() {
+    const listContainer = document.getElementById('trash-modal-list');
+    listContainer.innerHTML = '';
+
+    if (trash.length === 0) {
+      listContainer.innerHTML = '<p style="text-align: center; color: #777;">Kosz jest pusty</p>';
+    } else {
+      trash.forEach((entry, idx) => {
+        const row = document.createElement('div');
+        row.className = 'trash-item-row';
+
+        const info = document.createElement('div');
+        info.className = 'trash-item-title';
+        info.innerHTML = entry.type === 'folder' 
+          ? `<i class="fas fa-folder" style="color: var(--primary);"></i> ${entry.item.name}`
+          : `<i class="fas fa-link" style="color: var(--warning);"></i> ${entry.item.title || entry.item.url}`;
+
+        const actions = document.createElement('div');
+        actions.style.display = 'flex';
+        actions.style.gap = '5px';
+
+        const restoreBtn = document.createElement('button');
+        restoreBtn.className = 'btn-secondary';
+        restoreBtn.innerHTML = '<i class="fas fa-undo"></i>';
+        restoreBtn.title = 'Przywróć';
+        restoreBtn.onclick = () => restoreFromTrash(idx);
+
+        const deleteBtn = document.createElement('button');
+        deleteBtn.className = 'btn-danger';
+        deleteBtn.innerHTML = '<i class="fas fa-times"></i>';
+        deleteBtn.title = 'Usuń trwale z dysku';
+        deleteBtn.onclick = () => deletePermanently(idx);
+
+        actions.appendChild(restoreBtn);
+        actions.appendChild(deleteBtn);
+
+        row.appendChild(info);
+        row.appendChild(actions);
+        listContainer.appendChild(row);
+      });
+    }
+
+    document.getElementById('trash-modal').classList.add('active');
+  }
+
+  async function restoreFromTrash(index) {
+    const entry = trash.splice(index, 1)[0];
+    if (window.electronAPI) {
+      await window.electronAPI.restoreFromTrashDisk(entry);
+    }
+
+    if (entry.type === 'folder') {
+      folders.push(entry.item);
+    } else {
+      links.push(entry.item);
+    }
+
+    renderAllContent();
+    updateLinkCount();
+    showTrashModal();
+    showNotification('Przywrócono plik na dysku');
+  }
+
+  async function deletePermanently(index) {
+    const entry = trash.splice(index, 1)[0];
+    if (window.electronAPI) {
+      await window.electronAPI.deletePermanentlyDisk(entry);
+    }
+
+    updateLinkCount();
+    showTrashModal();
+    showNotification('Usunięto plik trwale z dysku', 'danger');
+  }
+
+  async function emptyTrash() {
+    if (window.electronAPI) {
+      await window.electronAPI.emptyTrashDisk();
+    }
+    trash = [];
+    updateLinkCount();
+    showTrashModal();
+    showNotification('Kosz na dysku został opróżniony', 'danger');
+  }
+
+  let draggedData = null;
+
+  function setupDragEvents(el, role) {
+    el.draggable = true;
+    
+    el.addEventListener('dragstart', (e) => {
+      e.stopPropagation();
+      draggedData = {
+        id: el.dataset.id,
+        type: el.dataset.type || (role === 'folder' || role === 'folder-target' ? 'folder' : 'link')
+      };
+      el.classList.add('dragging');
+      e.dataTransfer.setData('text/plain', JSON.stringify(draggedData));
+    });
+
+    el.addEventListener('dragend', () => {
+      el.classList.remove('dragging');
+    });
+
+    if (role === 'folder-target') {
+      el.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        el.classList.add('drag-over');
+      });
+
+      el.addEventListener('dragleave', () => el.classList.remove('drag-over'));
+
+      el.addEventListener('drop', async (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        el.classList.remove('drag-over');
+
+        if (draggedData && draggedData.type === 'link') {
+          const targetFolderId = el.dataset.id;
+          const link = links.find(l => l.id === draggedData.id);
+          if (link) {
+            link.folderId = targetFolderId;
+            if (window.electronAPI) {
+              await window.electronAPI.saveItemToDisk({ type: 'link', data: link });
+            }
+            renderAllContent();
+          }
+        }
+        draggedData = null;
+      });
+    }
+  }
+
+  function setupTrashZoneDragEvents() {
+    trashZone.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      trashZone.classList.add('drag-over');
+    });
+
+    trashZone.addEventListener('dragleave', () => {
+      trashZone.classList.remove('drag-over');
+    });
+
+    trashZone.addEventListener('drop', async (e) => {
+      e.preventDefault();
+      trashZone.classList.remove('drag-over');
+
+      if (!draggedData) return;
+
+      if (draggedData.type === 'folder') {
+        const index = folders.findIndex(f => f.id === draggedData.id);
+        if (index !== -1) {
+          const folder = folders.splice(index, 1)[0];
+          trash.push({ item: folder, type: 'folder' });
+          if (window.electronAPI) {
+            await window.electronAPI.moveToTrashDisk({ type: 'folder', item: folder });
+          }
+          links.forEach(l => { if (l.folderId === folder.id) l.folderId = null; });
+          showNotification(`Przeniesiono folder "${folder.name}" do Kosza`, 'warning');
+        }
+      } else if (draggedData.type === 'link') {
+        const index = links.findIndex(l => l.id === draggedData.id);
+        if (index !== -1) {
+          const link = links.splice(index, 1)[0];
+          trash.push({ item: link, type: 'link' });
+          if (window.electronAPI) {
+            await window.electronAPI.moveToTrashDisk({ type: 'link', item: link });
+          }
+          showNotification(`Przeniesiono link do Kosza`, 'warning');
+        }
+      }
+
+      draggedData = null;
+      renderAllContent();
+      updateLinkCount();
+    });
+  }
+
+  window.onload = init;
+</script>
+</body>
+</html>
