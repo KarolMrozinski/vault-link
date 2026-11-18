@@ -1,60 +1,99 @@
 <div align="center">
 
-# ⚡ VaultLink UI
+  <br />
+  <h1 align="center"><b>VaultLink UI</b></h1>
+  <p align="center">
+    <b>A high-performance, local-first bookmark & web resource management system.</b>
+    <br />
+    Inspired by Samsung One UI 9.5 Desktop Design Language.
+  </p>
 
-**A high-performance, local-first bookmark & web resource manager inspired by Samsung One UI 9.5.**
+  <p align="center">
+    <a href="https://electronjs.org">
+      <img src="https://img.shields.io/badge/Electron-28.0+-47A248?style=for-the-badge&logo=electron&logoColor=white" alt="Electron" />
+    </a>
+    <a href="https://nodejs.org">
+      <img src="https://img.shields.io/badge/Node.js-18.x+-339933?style=for-the-badge&logo=nodedotjs&logoColor=white" alt="Node.js" />
+    </a>
+    <a href="https://developer.mozilla.org">
+      <img src="https://img.shields.io/badge/JavaScript-ES6+-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black" alt="JavaScript" />
+    </a>
+    <a href="https://samsung.com">
+      <img src="https://img.shields.io/badge/UI_UX-One_UI_9.5-007AFF?style=for-the-badge" alt="One UI 9.5" />
+    </a>
+    <a href="LICENSE">
+      <img src="https://img.shields.io/badge/License-MIT-green?style=for-the-badge" alt="License" />
+    </a>
+  </p>
 
-[![Electron](https://img.shields.io/badge/Electron-28.0+-47A248?style=for-the-badge&logo=electron&logoColor=white)](https://electronjs.org)
-[![Node.js](https://img.shields.io/badge/Node.js-18.x+-339933?style=for-the-badge&logo=nodedotjs&logoColor=white)](https://nodejs.org)
-[![JavaScript](https://img.shields.io/badge/JavaScript-ES6+-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)](https://developer.mozilla.org)
-[![UI Design](https://img.shields.io/badge/UI-One_UI_9.5-007AFF?style=for-the-badge)](https://samsung.com)
-[![License](https://img.shields.io/badge/License-MIT-green.style=for-the-badge)](LICENSE)
+  <br />
 
-[Features](#-features) • [Architecture](#-architecture--technologies) • [Quick Start](#-quick-start) • [Data Structure](#-data-storage-location)
+  <a href="#-key-features">Key Features</a> •
+  <a href="#-architecture--tech-stack">Architecture</a> •
+  <a href="#-getting-started">Getting Started</a> •
+  <a href="#-data-persistence">Data Storage</a> •
+  <a href="#-license">License</a>
 
----
+  <br />
+  <br />
 
 </div>
 
-## ⚡ About The Project
+---
 
-**VaultLink UI** is a privacy-focused, desktop bookmark and resource management app built with **Electron**. It provides instant access to web links, documentation, and video resources without relying on cloud services.
+## ⚡ Overview
 
-Unlike traditional cloud bookmark managers, **VaultLink UI operates directly on your local file system**. Each link, folder, and system configuration is saved as an independent, isolated `.json` file, ensuring complete data ownership and zero telemetry.
+**VaultLink UI** is an ultra-fast, privacy-centric desktop application for organizing, previewing, and managing bookmarks, media streams, and web documentation. 
+
+Unlike traditional cloud-based bookmark managers, VaultLink UI utilizes a **Zero-Cloud, File-System First Architecture**. Every bookmark, folder, and configuration state is persisted natively on your local drive as isolated JSON files.
 
 ---
 
-## ✨ Features
+## ✨ Key Features
 
-* 🎨 **One UI 9.5 Aesthetic**: Premium dark-mode interface built with modern CSS variables, fluid typography, and Samsung-inspired components.
-* 📂 **Local-First Architecture (Zero-Cloud)**: All bookmarks and folder structures are automatically synchronized to a dedicated local directory (`Documents/MojeLinki_Baza`). Your data remains accessible even offline.
-* ⚡ **Instant Hover Live Preview**: Hovering over any card triggers an isolated, zero-latency `<webview>` live preview engine in the top-right corner.
-* 🚫 **Anti-Duplicate Shield**: Built-in URL normalization engine that prevents duplicate bookmark entries.
-* 🎬 **Media Preview Auto-Resolver**: Automatically detects video resources (e.g., YouTube) and extracts HD video posters with multimedia playback overlays.
-* 📦 **Database Backup (.vault)**: Export and import your entire library (bookmarks, folders, and trash) to a single `.vault` backup file.
-* 🗑️ **Trash Manager & Drag-and-Drop**: Organize cards into folders or drag them to the Trash zone with full recovery support.
-
----
-
-## 🛠 Architecture & Technologies
-
-VaultLink UI follows strict Electron security practices:
-
-* **Electron.js**: Core desktop application container.
-* **Context Isolation & Preload Bridge**: Complete separation of the `Renderer Process` from Node.js system APIs via a secure `contextBridge` (`preload.js`).
-* **IPC (Inter-Process Communication)**: Asynchronous I/O file operations.
-* **HTML5 / CSS3 / ES6+ JavaScript**: Native frontend implementation for maximum frame rate and responsiveness.
-* **FontAwesome 6**: Unified icon system.
+* 💎 **Samsung One UI 9.5 UX**: Modern dark-mode palette, glassmorphism accents, fluid hover states, and smooth drag-and-drop interactions.
+* 🛡️ **Local-First File Persistence**: Zero external servers, telemetry, or tracking. Data is saved directly to your native document directory (`Documents/MojeLinki_Baza`).
+* ⚡ **Zero-Latency Hover Webview**: Hovering over any card triggers an instant, isolated, non-blocking native live preview (`<webview>`) in the top-right corner.
+* 🔒 **Anti-Duplicate Engine**: Automatic URL normalization engine that checks for duplicate entries before saving.
+* 🎬 **Smart Media Resolver**: Auto-detects video platforms (e.g., YouTube) to retrieve high-definition video posters with custom playback indicators.
+* 💾 **Portable Vault Backups (`.vault`)**: One-click export/import feature to package your entire environment into a portable backup file.
+* 🗑️ **Built-in Trash System**: Safely stage deleted items before permanently removing them from your disk.
 
 ---
 
-## 🚀 Quick Start
+## 🏗️ Architecture & Tech Stack
+
+VaultLink UI implements modern Electron security standards, isolating the rendering environment from backend Node.js APIs via a secure context bridge.
+
+```
+┌────────────────────────────────────────────────────────┐
+│                   VaultLink UI App                     │
+├──────────────────────────┬─────────────────────────────┤
+│   Renderer Process       │      Main Process           │
+│  (HTML5 / CSS3 / ES6)    │       (Node.js / fs)        │
+│                          │                             │
+│  - One UI 9.5 Dashboard  │  - Native File Operations   │
+│  - Hover Live Preview    │  - Disk IPC Handlers        │
+│  - Drag & Drop System    │  - App Lifecycle Control    │
+└─────────────▲────────────┴──────────────▲──────────────┘
+              │                           │
+              └──────► Preload Bridge ────┘
+                      (contextBridge)
+```
+
+* **Frontend**: HTML5, CSS3 Custom Properties, Vanilla JavaScript (ES6+), FontAwesome 6
+* **Desktop Core**: Electron v28.0+
+* **IPC Security**: Context Isolation Enabled (`preload.js`), Node Integration Disabled in Renderer
+
+---
+
+## 🚀 Getting Started
 
 ### Prerequisites
 
-* [Node.js](https://nodejs.org/) (LTS version recommended).
+Ensure you have **Node.js** (v18.0.0 or higher) installed on your system.
 
-### Installation & Run
+### Installation
 
 1. **Clone the repository:**
    ```bash
@@ -67,37 +106,39 @@ VaultLink UI follows strict Electron security practices:
    npm install
    ```
 
-3. **Start the application:**
+3. **Launch the application:**
    ```bash
    npm start
    ```
 
 ---
 
-## 📁 Project Structure
+## 📁 Repository Structure
 
 ```
 VaultLink-UI/
-├── main.js        # Electron Main Process (Window lifecycle & filesystem I/O)
-├── preload.js     # Secure IPC bridge (ContextBridge)
-├── index.html     # User Interface (One UI 9.5 Layout + Frontend Logic)
-├── package.json   # Project manifest & Node.js dependencies
-├── .gitignore     # Git repository exclusion rules
-└── README.md      # Project documentation
+├── main.js        # Main Electron Process (Window & I/O management)
+├── preload.js     # Secure ContextBridge API wrapper
+├── index.html     # Single-page UI & Application Engine
+├── package.json   # Node.js configuration & dependencies
+├── .gitignore     # Git exclusion parameters
+└── README.md      # Repository Documentation
 ```
 
 ---
 
-## 💾 Data Storage Location
+## 💾 Data Persistence
 
-Upon first launch, VaultLink UI automatically generates the local storage hierarchy on your machine:
+Upon first launch, VaultLink UI initializes a native storage folder on your local file system:
 
-* **Windows**: `C:\Users\<Username>\Documents\MojeLinki_Baza\`
-* **macOS**: `/Users/<Username>/Documents/MojeLinki_Baza/`
-* **Linux**: `/home/<Username>/Documents/MojeLinki_Baza/`
+| OS | Default Storage Path |
+| :--- | :--- |
+| **Windows** | `C:\Users\<Username>\Documents\MojeLinki_Baza\` |
+| **macOS** | `/Users/<Username>/Documents/MojeLinki_Baza/` |
+| **Linux** | `/home/<Username>/Documents/MojeLinki_Baza/` |
 
 ---
 
-## 📜 License
+## 📄 License
 
-Distributed under the **MIT License**. See `LICENSE` for more information.
+This project is licensed under the **MIT License**. See the `LICENSE` file for full details.
