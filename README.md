@@ -107,7 +107,7 @@ VaultLink UI implements modern Electron security standards, isolating the render
 ```
 
 * **Frontend**: HTML5, CSS3 Custom Properties, Vanilla JavaScript (ES6+), FontAwesome 6
-* **Desktop Core**: Electron v28.0+
+* **Desktop Core**: Electron v45.0+
 * **IPC Security**: Context Isolation Enabled (`preload.js`), Node Integration Disabled in Renderer
 
 ---
