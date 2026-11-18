@@ -51,13 +51,38 @@ Unlike traditional cloud-based bookmark managers, VaultLink UI utilizes a **Zero
 
 ## ✨ Key Features
 
-* 💎 **Samsung One UI 9.5 UX**: Modern dark-mode palette, glassmorphism accents, fluid hover states, and smooth drag-and-drop interactions.
-* 🛡️ **Local-First File Persistence**: Zero external servers, telemetry, or tracking. Data is saved directly to your native document directory (`Documents/MojeLinki_Baza`).
-* ⚡ **Zero-Latency Hover Webview**: Hovering over any card triggers an instant, isolated, non-blocking native live preview (`<webview>`) in the top-right corner.
-* 🔒 **Anti-Duplicate Engine**: Automatic URL normalization engine that checks for duplicate entries before saving.
-* 🎬 **Smart Media Resolver**: Auto-detects video platforms (e.g., YouTube) to retrieve high-definition video posters with custom playback indicators.
-* 💾 **Portable Vault Backups (`.vault`)**: One-click export/import feature to package your entire environment into a portable backup file.
-* 🗑️ **Built-in Trash System**: Safely stage deleted items before permanently removing them from your disk.
+<table>
+  <tr>
+    <td width="50%" valign="top">
+      <h3>🎨 One UI 9.5 Desktop Experience</h3>
+      <p>Polished dark mode aesthetic with glassmorphism accents, fluid hover states, and intuitive drag-and-drop file organization.</p>
+    </td>
+    <td width="50%" valign="top">
+      <h3>🔒 Local-First Storage</h3>
+      <p>Zero cloud reliance, zero tracking. All your data lives locally inside <code>Documents/MojeLinki_Baza</code> as clean JSON objects.</p>
+    </td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top">
+      <h3>⚡ Instant Hover Live Preview</h3>
+      <p>Non-blocking native <code>&lt;webview&gt;</code> engine renders live web pages in real-time in the top-right view pane with zero latency.</p>
+    </td>
+    <td width="50%" valign="top">
+      <h3>🛡️ Smart URL Normalization</h3>
+      <p>Built-in anti-duplicate detection normalizes incoming links to prevent accidental double saves automatically.</p>
+    </td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top">
+      <h3>🎬 Intelligent Media Resolver</h3>
+      <p>Auto-detects platforms like YouTube & Vimeo to extract high-definition poster thumbnails and media metadata on the fly.</p>
+    </td>
+    <td width="50%" valign="top">
+      <h3>📦 Portable Vault Backups</h3>
+      <p>Export your full bookmark hierarchy into a single portable <code>.vault</code> file for quick migration across environments.</p>
+    </td>
+  </tr>
+</table>
 
 ---
 
